@@ -9,7 +9,7 @@ return array(
 
     //SESSION
     'SESSION_AUTO_START'    => true, //是否开启SESSION
-    'SESSION_TYPE'          => 'Db', //Session 写入数据库
+    'SESSION_TYPE'          => 'Dbi', //Session 写入数据库
     'SESSION_PREFIX'        => 'edd_',
     'SESSION_EXPIRE'        => 3600, //session 过期时间
     'SESSION_TABLE'         => 'edd_session', //存放session 数据表
@@ -17,6 +17,7 @@ return array(
     //数据库
     'DB_HOST'               => 'localhost',
     'DB_USER'               => 'root',
+    'DB_TYPE'               => 'mysqli',
     'DB_NAME'               => 'eddpos',
     'DB_PWD'                => '123456',
     'DB_PORT'               => '3306',
