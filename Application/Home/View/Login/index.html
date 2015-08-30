@@ -7,6 +7,13 @@
        <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/common.css" />
     </HEAD>
     <BODY>
-        Customer
+        <form action="{:U('Login/handler')}" method="post" accept-charset="utf-8">
+            {:L('username_text')}:
+            <input type="text" name="username" value="">
+            <BR>
+            {:L('password_text')}:
+            <input type="PASSWORD" name="password" value="">
+            <p><input type="submit" value="{:L('login')} &rarr;"></p>
+        </form>
     </BODY>
 </HTML>

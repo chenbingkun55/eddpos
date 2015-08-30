@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+    <HEAD>
+       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+       <meta http-equiv="pragma" content="no-cache" />
+       <meta http-equiv="cache-control" content="no-cache" />
+       <TITLE> {:C('SITE_NAME')} </TITLE>
+       <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/common.css" />
+    </HEAD>
+    <BODY>
+        <table border="0">
+            <tr>
+                <th>{:L('person_id')}</th>
+                <th>{:L('username_text')}</th>
+                <th>{:L('phone_number')}</th>
+                <th>{:L('email')}</th>
+                <th>{:L('address')}</th>
+            </tr>
+            <foreach name="all_employee" item="employee">
+                <tr>
+                    <td>{$employee.person_id}</td>
+                    <td>{$employee.username}</td>
+                    <td>{$employee.phone_number}</td>
+                    <td>{$employee.email}</td>
+                    <td>{$employee.address_1}</td>
+                </tr>
+            </foreach>
+        </table>
+    </BODY>
+</HTML>
