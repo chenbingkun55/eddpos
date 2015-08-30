@@ -3,7 +3,7 @@ namespace Home\Controller;
 use Think\Controller;
 class EmployeesController extends Controller {
     public function index(){
-        $tag = I('tag', $tag); // $tag 控制Member类动作.
+        $tag = I('tag', $tag); // $tag 控制动作.
 
         switch($tag){
             case 'a':
@@ -32,7 +32,7 @@ class EmployeesController extends Controller {
         switch($tag){
             case 'u':
                 $id = I('id',0,'intval');
-                $up_data = D('employees')->relation(true)->find($id);
+                $up_data = D('EmployeesView')->where('deleted = 0')->find($id);
             case 'a':
                 $this->data = array(
                     'title' => is_array($up_data) ? '修改成员' : '添加成员',
@@ -45,11 +45,19 @@ class EmployeesController extends Controller {
                     ),
                     'table' => array(
                        array(
-                            'person_id',
-                            '成员ID',
+                            'first_name',
+                            '姓',
                             'type' => array(
                                 'input' => 'text',
-                                'value' => $up_data['person_id'],
+                                'value' => $up_data['first_name'],
+                            ),
+                        ),
+                       array(
+                            'last_name',
+                            '名',
+                            'type' => array(
+                                'input' => 'text',
+                                'value' => $up_data['last_name'],
                             ),
                         ),
                        array(
@@ -97,7 +105,7 @@ class EmployeesController extends Controller {
                             '',
                             'type' => array(
                                 'input' => 'hidden',
-                                'value' => $up_data['person_id'],
+                                'value' => $up_data['id'],
                             ),
                         ),
                     ),
@@ -105,24 +113,23 @@ class EmployeesController extends Controller {
                 break;
             case 'v':
             default :
-                //$field = array('id','person_id','username','email','address_1');
+                $field = array('id','username','phone_number','email','address_1');
 
                 $this->data = array(
                     'title' => '员工列表',
                     'url' => U('index',array('tag' => a),''),
                     'col' => 5,
-                    'table' => D('employees')->relation(true)->where('deleted = 0')->select(),
+                    'table' => D('EmployeesView')->field($field)->where('deleted = 0')->select(),
                     'th' => array(
-                        '用户名',
                         'ID',
+                        '用户名',
                         '电话号码',
                         '邮箱',
                         '地址',
                         '操作',
                     ),
-                    'hiddens' => array('password','deleted','first_name','last_name','address_2','city','state','zip','country','comments','id'),
-                    'function' => array(
-                    ),
+                    'hiddens' => array(),
+                    'function' => array(),
                     'option' => array(
                         '修改' => U('index',array('tag' => 'u'),''),
                         '删除' => U('index',array('tag' => 'd'),''),
@@ -134,28 +141,36 @@ class EmployeesController extends Controller {
     }
 
     public function handle() {
-        $person_id = I('person_id',0,'intval');
+        $id = I('id',0,'intval');
         $password = I('password','','md5');
         $update = $_GET['u'] ? $_GET['u'] : 0;
 
-        $employee = D('employees');
         $data = array(
-            "person_id" => $person_id,
             "username" => I('username'),
-            empty($password) ? '' : 'password' => $password,
             "People" => array(
-                "first_name" => 'Test',
-                "last_name" => 'Tes',
-                "person_id" => $person_id,
+                "first_name" => I('first_name'),
+                "last_name" => I('last_name'),
                 "phone_number" => I('phone_number'),
                 "email" => I('email'),
                 "address_1" => I('address'),
             ),
         );
+        if($id != 0) { $data["person_id"] = $id; }
+        if(! empty($password)) { $data['password'] = $password; }
 
-        $re = $update ? $employee->relation(true)->where(array('person_id' => $person_id))->save($data) : $employee->relation(true)->add($data);
+        print_r($data);
 
         $re_text = $update ? "修改" : "添加";
+
+        if($update){
+            $re = D('Employees')->relation(true)->where(array('person_id' => $id))->save($data);
+        } else {
+            $data["person_id"] = M('People')->add($data["People"]);
+            if(empty($data['person_id']) || $data['person_id'] == 0 ){
+                $this->error($re_text."失败");
+            }
+            $re = M('Employees')->add($data);
+        }
 
         if ( $re ) {
             $this->success( $re_text."成功",U("index"));

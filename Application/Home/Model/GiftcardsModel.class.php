@@ -2,7 +2,7 @@
 namespace Home\Model;
 use Think\Model\RelationModel;
 
-class EmployeesModel extends RelationModel{
+class GiftcardsModel extends RelationModel{
     protected $_link = array(
         'People'=>array(
             'mapping_type'  => self::HAS_ONE,

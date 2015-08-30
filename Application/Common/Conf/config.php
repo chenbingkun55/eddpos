@@ -6,6 +6,7 @@ return array(
     'LANG_LIST'             => 'en-us', // 允许切换的语言列表 用逗号分隔
     'VAR_LANGUAGE'          => 'l', // 默认语言切换变量
     'URL_MODEL'             => 2, //配合 Apache rewrite 消除URL里的index.php,需要开启 AllowOverride All
+    'SHOW_PAGE_TRACE' =>true, // 显示页面Trace信息
 
     //SESSION
     'SESSION_AUTO_START'    => true, //是否开启SESSION
