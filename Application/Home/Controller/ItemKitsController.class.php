@@ -11,7 +11,7 @@ class ItemKitsController extends Controller {
                 break;
             case 'd':
                 $id = I('id',0,'intval');
-                if( D('ItemKits')->relation(true)->delete($id)){
+                if( D('ItemKits')->relation('Item_kits')->delete($id) && D('ItemKitItems')->where(array('item_kit_id' => $id))->delete()){
                     $this->success("删除成功",U("index"));
                 } else {
                     $this->error("删除失败");
@@ -132,12 +132,15 @@ class ItemKitsController extends Controller {
         if($update){
             $re = D('ItemKits')->relation(true)->where(array('item_kit_id' => $id))->save($data);
         } else {
-            $kit_new_id = M('Item_kits')->add($data);
-            $clone_data = M('ItemKitItems')->where(array('item_kit_id' => $clone_id))->select();
+            $re = $kit_new_id = M('Item_kits')->add($data);
 
-            foreach($clone_data as $cdata){
-                $cdata['item_kit_id'] = $kit_new_id;
-                $re = M('ItemKitItems')->add($cdata);
+            if($clone_id){
+                $clone_data = M('ItemKitItems')->where(array('item_kit_id' => $clone_id))->select();
+
+                foreach($clone_data as $cdata){
+                    $cdata['item_kit_id'] = $kit_new_id;
+                    $re_clone = M('ItemKitItems')->add($cdata);
+                }
             }
         }
 
