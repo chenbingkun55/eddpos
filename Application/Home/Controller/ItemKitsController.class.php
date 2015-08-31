@@ -67,6 +67,14 @@ class ItemKitsController extends Controller {
                             ),
                         ),
                        array(
+                            'clone_id',
+                            '',
+                            'type' => array(
+                                'input' => 'hidden',
+                                'value' => $id,
+                            ),
+                        ),
+                       array(
                             'id',
                             '',
                             'type' => array(
@@ -103,36 +111,34 @@ class ItemKitsController extends Controller {
                 );
         }
 
-            
         $this->display("Public/table");
     }
 
     public function handle() {
         $id = I('id',0,'intval');
+        $clone_id = I('clone_id',0,'intval');
         $update = $_GET['u'] ? $_GET['u'] : 0;
 
         $data = array(
             "name" => I('name'),
             "description" => I('description'),
-            "Item_kit_items" => array(
-                "quantity" => I('quantity'),
-            ),
         );
-        if($id != 0) { 
+        if($id != 0) {
             $data["item_kit_id"] = $id;
         }
 
         $re_text = $update ? "修改" : "添加";
 
         if($update){
-            $re = 1;
-            D('ItemKits')->relation(true)->where(array('item_kit_id' => $id))->save($data);
+            $re = D('ItemKits')->relation(true)->where(array('item_kit_id' => $id))->save($data);
         } else {
-            $data['Item_kit_items']['item_kit_id'] = M('Item_kits')->add($data);
-            if(empty($data['Item_kit_items']['item_kit_id']) || $data['Item_kit_items']['item_kit_id'] == 0 ){
-                $this->error($re_text."失败");
+            $kit_new_id = M('Item_kits')->add($data);
+            $clone_data = M('ItemKitItems')->where(array('item_kit_id' => $clone_id))->select();
+
+            foreach($clone_data as $cdata){
+                $cdata['item_kit_id'] = $kit_new_id;
+                $re = M('ItemKitItems')->add($cdata);
             }
-            $re = M('ItemKitItems')->add($data['Item_kit_items']);
         }
 
         if ( $re ) {

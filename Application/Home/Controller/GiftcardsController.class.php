@@ -66,7 +66,7 @@ class GiftcardsController extends Controller {
                             'type' => array(
                                 'input' => 'select',
                                 'selected' => $up_data['person_id'],
-                                'value' => M('Customers')->getField('person_id,account_number'),
+                                'value' => M('Customers')->where('deleted = 0')->getField('person_id,account_number'),
                             ),
                         ),
                        array(
