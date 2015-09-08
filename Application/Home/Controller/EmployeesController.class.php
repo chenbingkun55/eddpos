@@ -1,8 +1,9 @@
 <?php
 namespace Home\Controller;
-use Think\Controller;
-class EmployeesController extends Controller {
+class EmployeesController extends BaseController {
     public function index(){
+        A('Secure/Action')->is_login();
+
         $tag = I('tag', $tag); // $tag 控制动作.
 
         switch($tag){
@@ -142,7 +143,7 @@ class EmployeesController extends Controller {
 
     public function handle() {
         $id = I('id',0,'intval');
-        $password = I('password','','md5');
+        $password = I('password','');
         $update = $_GET['u'] ? $_GET['u'] : 0;
 
         $data = array(
@@ -156,9 +157,7 @@ class EmployeesController extends Controller {
             ),
         );
         if($id != 0) { $data["person_id"] = $id; }
-        if(! empty($password)) { $data['password'] = $password; }
-
-        print_r($data);
+        if(! empty($password)) { $data['password'] = sha1($password.C('SECURE_KEY')); }
 
         $re_text = $update ? "修改" : "添加";
 
@@ -178,4 +177,25 @@ class EmployeesController extends Controller {
             $this->error($re_text."失败");
         }
     }
+
+    public function login(){
+        $this->display();
+    }
+
+    public function login_handle(){
+        D('Employees')->check_login();
+
+        $this->success(L('login_success'),U('Home/index'));
+    }
+
+    public function check_is_login(){
+        $PERSON = session('PERSON');
+
+        if(empty($PERSON) || ($PERSON['person_id'] == '' || $PERSON['deleted'] != 0)){
+            $this->error(L('login_error'),U('Employees/login'));
+        }
+
+        $this->success(L('login_success'),U('Home/index'));
+    }
+
 }

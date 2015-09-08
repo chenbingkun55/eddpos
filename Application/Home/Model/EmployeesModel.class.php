@@ -10,4 +10,21 @@ class EmployeesModel extends RelationModel{
             'foreign_key'   => 'person_id',
             ),
         );
+
+    public function check_login(){
+        $username = trim(I('username'));
+        $password = trim(I('password'));
+
+        if(empty($username) || empty($password)){
+            $this->error(L('login_failed'),U('Employees/login'));
+        }
+
+        $re = M('Employees')->field('username,person_id,deleted')->where('username = \''.$username.'\' AND password = md5(\''.$password.'\') AND deleted = 0')->find();
+
+        if(empty($re)) {
+            return -1;
+        }
+
+        session('PERSON',$re);
+    }
 }

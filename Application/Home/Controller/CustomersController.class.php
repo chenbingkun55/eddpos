@@ -3,6 +3,8 @@ namespace Home\Controller;
 use Think\Controller;
 class CustomersController extends Controller {
     public function index(){
+        A('Secure/Action')->is_login();
+
         $tag = I('tag', $tag); // $tag 控制动作.
 
         switch($tag){

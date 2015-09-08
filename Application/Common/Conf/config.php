@@ -1,6 +1,6 @@
 <?php
 return array(
-    'MODULE_ALLOW_LIST'     => array('Home','Admin'), //允许访问的模块
+    'MODULE_ALLOW_LIST'     => array('Home','Admin','Secure'), //允许访问的模块
     'LANG_SWITCH_ON'        => true,   // 开启语言包功
     'LANG_AUTO_DETECT'      => false, // 自动侦测语言 开启多语言功能后有效
     'LANG_LIST'             => 'en-us', // 允许切换的语言列表 用逗号分隔
@@ -26,4 +26,5 @@ return array(
 
     //自定义配置
     'SITE_NAME'             => '易点点 管理系统',
+    'SECURE_KEY'            => 'TEST',
 );

@@ -1,7 +1,7 @@
 <?php
 namespace Home\Controller;
-use Think\Controller;
-class ItemsController extends Controller {
+
+class ItemsController extends BaseController {
     public function index(){
         $tag = I('tag', $tag); // $tag 控制动作.
 
@@ -178,7 +178,7 @@ class ItemsController extends Controller {
                 "quantity" => I('quantity'),
             ),
         );
-        if($id != 0) { 
+        if($id != 0) {
             $data["item_id"] = $id;
         }
 
@@ -201,5 +201,13 @@ class ItemsController extends Controller {
         } else {
             $this->error($re_text."失败");
         }
+    }
+
+    public function find_items(){
+        $fstr = I('fstr','');
+
+        $re = M('items')->where('name like \'%'.$fstr.'%\'')->field('name')->select();
+        //$this->p($re);
+        $this->ajaxReturn($re,'JSON');
     }
 }
