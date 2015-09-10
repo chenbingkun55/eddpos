@@ -11,38 +11,27 @@
 
      <script>
          $(function() {
-          $("#item_select").autocomplete({
-           source: function( request, response ) {
-            var name=$.ui.autocomplete.escapeRegex( request.term );
-            response( $.grep( find_items(name), function( item ){
-             return  item;
-            }) );
-           }
-          });
+             $("#sale_item").keyup(function(){
+                 $.ajax({
+                     url: "{:U('Home/Sales/get_item')}",
+                     type: "get",
+                     data: ,
+                     data Type: 'json',
+                     success: function(data){
+                        var row_data = data.rows;
+                        if($row_data.length) {
+                            $.each(data )
 
-          function find_items(name)
-          {
-              reData = new Array();
-              $.ajax({
-                 type: "post",
-                 url: "{:U('Home/Items/find_items')}",
-                 dataType: "json",
-                 success: function (data) {
-                    $(data).each(function(i,val) {
-                        global reData[i]=val.name;
-                    })
-                  },
-                  error: function (XMLHttpRequest, textStatus, errorThrown) {
-                      alert(errorThrown);
-                  }
-              });
-              alert(reData[0]);
-          }
+                            $html.empty();
+                        }
+                     }
+                 })
+             });
          });
     </script>
     </HEAD>
     <BODY>
         Add item:
-      <input id="item_select" />
+      <input id="sale_item" />
     </BODY>
 </HTML>
