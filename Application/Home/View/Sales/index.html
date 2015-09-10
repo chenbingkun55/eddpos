@@ -12,20 +12,19 @@
      <script>
          $(function() {
              $("#sale_item").keyup(function(){
-                 $.ajax({
-                     url: "{:U('Home/Sales/get_item')}",
-                     type: "get",
-                     data: ,
-                     data Type: 'json',
-                     success: function(data){
-                        var row_data = data.rows;
-                        if($row_data.length) {
-                            $.each(data )
+                 var fstr = $("#sale_item").val().trim();
+                 if( fstr == '' || fstr == null ) return;
 
-                            $html.empty();
-                        }
-                     }
-                 })
+                 $.get("{:U('Home/Sales/find_item/fstr/','','')}" + "/" + fstr,function(items,status){
+                      $("#item_list li").remove();
+                      if( items == '' | items == null )  $("#item_list").attr('display','none');
+
+                      $.each( items, function(i, item)
+                      { 
+                          $("#item_list").append("<li title=" + item.id + ">" + item.name + "</li>");
+                      });
+                      $("#item_list").attr('display','inline');
+                 });
              });
          });
     </script>
@@ -33,5 +32,9 @@
     <BODY>
         Add item:
       <input id="sale_item" />
+      <div id="sale_select">
+          <ul id="item_list">
+          </ul>
+      </div>
     </BODY>
 </HTML>

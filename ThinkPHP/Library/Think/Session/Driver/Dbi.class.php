@@ -67,7 +67,7 @@ class Dbi {
                    isset($name[$w])?$name[$w]:$name[0]
                    );
 
-               if(!$hander || !$dbSel)
+               if(!$hander)
                    return false;
                $this->hander[0] = $hander;
                //从数据库链接

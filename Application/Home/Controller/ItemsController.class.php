@@ -203,11 +203,11 @@ class ItemsController extends BaseController {
         }
     }
 
-    public function find_items(){
-        $fstr = I('fstr','');
+    //public function find_items(){
+        //$fstr = I('fstr','');
 
-        $re = M('items')->where('name like \'%'.$fstr.'%\'')->field('name')->select();
-        //$this->p($re);
-        $this->ajaxReturn($re,'JSON');
-    }
+        //$re = M('items')->where('name like \'%'.$fstr.'%\'')->field('name')->select();
+        ////$this->p($re);
+        //$this->ajaxReturn($re,'JSON');
+    //}
 }
