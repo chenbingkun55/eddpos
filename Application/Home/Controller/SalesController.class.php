@@ -18,7 +18,7 @@ class SalesController extends BaseController {
         $return_data = array();
 
         if(! empty($fstr)) {
-            $re = M('items')->where('item_number like \''.$fstr.'%\'')->field($fileds)->select();
+            $re = M('items')->where('item_number like \'%'.$fstr.'%\'')->field($fileds)->select();
             if( is_array($re) ) {
                 foreach($re as $item){
                     $id_not_in .= $item['id'] . ",";
@@ -41,7 +41,7 @@ class SalesController extends BaseController {
 
     public function add_item(){
         $id = I('id','intval');
-        $fileds = "item_id as id,item_number,description,name";
+        $fileds = "item_id as id,unit_price,percent,item_number,description,name";
         $is_new = true;
         $sale_array = array();
 
@@ -66,7 +66,9 @@ class SalesController extends BaseController {
             }
         }
         session('shop_cat',$sale_array,3600);
+    }
 
+    public function show_item(){
         $this->ajaxReturn($this->get_sale_items());
     }
 
@@ -76,7 +78,7 @@ class SalesController extends BaseController {
 
         if(is_array($sale_array)){
             foreach($sale_array as $sale){
-                $re = M('items')->where('item_id = '.$sale['id'])->field($fileds)->find();
+                $re = D('ItemsView')->find($sale['id']);
                 $re['count'] = $sale['count'];
 
                 array_push($sale_item_array,$re);
