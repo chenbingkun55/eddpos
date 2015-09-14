@@ -10,31 +10,62 @@
        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
      <script>
+
          $(function() {
+             var $list_item = $("<ul class='autocomplete'></ul>").hide().insertAfter("#sale_item");
+             var $list_sale = $('#list_sale');
+
              $("#sale_item").keyup(function(){
                  var fstr = $("#sale_item").val().trim();
-                 if( fstr == '' || fstr == null ) return;
+                 if(fstr == '' || fstr == null) return;
 
-                 $.get("{:U('Home/Sales/find_item/fstr/','','')}" + "/" + fstr,function(items,status){
-                      $("#item_list li").remove();
-                      if( items == '' | items == null )  $("#item_list").attr('display','none');
-
-                      $.each( items, function(i, item)
-                      { 
-                          $("#item_list").append("<li title=" + item.id + ">" + item.name + "</li>");
+                 $.getJSON("{:U('Home/Sales/find_item/fstr/','','')}" + "/" + fstr,function(items,status){
+                      $list_item.empty();
+                      $.each(items, function(i, item)
+                      {
+                          $("<li><li>").text("[" + item.id + "] "+item.name).attr("id", item.id).appendTo($list_item).mouseover(function(){
+                              $(this).css("background","#000000");
+                          }).mouseout(function(){
+                              $(this).css("background","#FFFFFF");
+                          }).click(function(){
+                              $.getJSON("{:U('Home/Sales/add_item/id/','','')}" + "/" + item.id,function(sales,status2){
+                                  $list_sale.empty();
+                                  $("<tr><tr>").html("<th>Number</th><th>Name</th><th>Count</th>").appendTo($list_sale);
+                                  $.each(sales, function(i, sale)
+                                  {
+                                      $("<tr><tr>").html("<td>"+sale.item_number+"</td><td>"+sale.name+"</td><td>"+sale.count+"</td>").appendTo($list_sale);
+                                     $list_sale.hide();
+                                  });
+                                 $list_sale.show();
+                              });
+                          });
+                          $list_item.hide();
                       });
-                      $("#item_list").attr('display','inline');
+                 $list_item.show();
                  });
              });
          });
     </script>
     </HEAD>
     <BODY>
+        <a href="{:U('Home/Sales/shop_cat_clean')}">Clean Shop Cat</a>
+        <BR>
         Add item:
       <input id="sale_item" />
-      <div id="sale_select">
-          <ul id="item_list">
-          </ul>
-      </div>
+      <table id="list_sale" border="0">
+          <tr>
+              <th>Number</th>
+              <th>Name</th>
+              <th>count</th>
+          </tr>
+          <foreach name="shop_cat" item="sale">
+              <tr>
+                  <td>{$sale.item_number}</td>
+                  <td>{$sale.name}</td>
+                  <td>{$sale.count}</td>
+              </tr>
+          </foreach>
+      </table>
+
     </BODY>
 </HTML>

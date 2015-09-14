@@ -12,4 +12,5 @@ return array(
     'phone_number'                      => '电话号码',
     'email'                             => '邮箱',
     'address'                           => '地址',
+    'sale_clean_success'                => '清空购物车',
  );
