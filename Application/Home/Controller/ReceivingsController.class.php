@@ -5,92 +5,92 @@ class ReceivingsController extends BaseController {
     public function index(){
         A('Secure/Action')->is_login();
 
-        //if(! empty(session('?shop_cat'))){
-            //$this->assign('shop_cat',$this->get_sale_items());
-        //}
+        if(! empty(session('?receiving_cat'))){
+            $this->assign('receiving_cat',$this->get_receiving_items());
+        }
         $this->display();
     }
 
-    //public function find_item(){
-        //$fstr = I('fstr','');
-        //$fileds = "item_id as id,item_number,description,name";
-        //$id_not_in = "";
-        //$return_data = array();
+    public function find_item(){
+        $fstr = I('fstr','');
+        $fileds = "item_id as id,item_number,description,name";
+        $id_not_in = "";
+        $return_data = array();
 
-        //if(! empty($fstr)) {
-            //$re = M('items')->where('item_number like \'%'.$fstr.'%\'')->field($fileds)->select();
-            //if( is_array($re) ) {
-                //foreach($re as $item){
-                    //$id_not_in .= $item['id'] . ",";
-                //}
-                //$id_not_in = rtrim($id_not_in,",");
-            //}
+        if(! empty($fstr)) {
+            $re = M('items')->where('item_number like \'%'.$fstr.'%\'')->field($fileds)->select();
+            if( is_array($re) ) {
+                foreach($re as $item){
+                    $id_not_in .= $item['id'] . ",";
+                }
+                $id_not_in = rtrim($id_not_in,",");
+            }
 
-            //$return_data = array_merge($return_data,$re);
+            $return_data = array_merge($return_data,$re);
 
-            //$where = 'name like \'%'.$fstr.'%\'';
-            //if( ! empty($id_not_in)){
-                //$where = 'name like \'%'.$fstr.'%\' AND item_id not in ('. $id_not_in .')';
-            //}
-            //$re = M('items')->where($where)->field($fileds)->select();
-            //$return_data = array_merge($return_data,$re);
+            $where = 'name like \'%'.$fstr.'%\'';
+            if( ! empty($id_not_in)){
+                $where = 'name like \'%'.$fstr.'%\' AND item_id not in ('. $id_not_in .')';
+            }
+            $re = M('items')->where($where)->field($fileds)->select();
+            $return_data = array_merge($return_data,$re);
 
-            //$this->ajaxReturn($return_data,'JSON');
-        //}
-    //}
+            $this->ajaxReturn($return_data,'JSON');
+        }
+    }
 
-    //public function add_item(){
-        //$id = I('id','intval');
-        //$fileds = "item_id as id,unit_price,percent,item_number,description,name";
-        //$is_new = true;
-        //$sale_array = array();
+    public function add_item(){
+        $id = I('id','intval');
+        $fileds = "item_id as id,unit_price,percent,item_number,description,name";
+        $is_new = true;
+        $receiving_array = array();
 
-        ////session('shop_cat',null);
+        //session('receiving_cat',null);
 
-        //if(empty(session('?shop_cat'))){
-            //$sale_array[0]['id'] = $id;
-            //$sale_array[0]['count'] = 1;
-        //} else {
-            //$sale_array = session('shop_cat');
-            //for($i = 0; $i < count($sale_array); $i++){
-                //if($sale_array[$i]['id'] == $id){
-                    //$sale_array[$i]['count'] += 1;
-                    //$is_new = false;
-                //}
-            //}
+        if(empty(session('?receiving_cat'))){
+            $receiving_array[0]['id'] = $id;
+            $receiving_array[0]['count'] = 1;
+        } else {
+            $receiving_array = session('receiving_cat');
+            for($i = 0; $i < count($receiving_array); $i++){
+                if($receiving_array[$i]['id'] == $id){
+                    $receiving_array[$i]['count'] += 1;
+                    $is_new = false;
+                }
+            }
 
-            //if($is_new) {
-                //$temp_array['id'] = $id;
-                //$temp_array['count'] = 1;
-                //array_push($sale_array,$temp_array);
-            //}
-        //}
-        //session('shop_cat',$sale_array,3600);
-    //}
+            if($is_new) {
+                $temp_array['id'] = $id;
+                $temp_array['count'] = 1;
+                array_push($receiving_array,$temp_array);
+            }
+        }
+        session('receiving_cat',$receiving_array,3600);
+    }
 
-    //public function show_item(){
-        //$this->ajaxReturn($this->get_sale_items());
-    //}
+    public function show_item(){
+        $this->ajaxReturn($this->get_receiving_items());
+    }
 
-    //public function get_sale_items(){
-        //$sale_item_array = array();
-        //$sale_array = session('shop_cat');
+    public function get_receiving_items(){
+        $receiving_item_array = array();
+        $receiving_array = session('receiving_cat');
 
-        //if(is_array($sale_array)){
-            //foreach($sale_array as $sale){
-                //$re = D('ItemsView')->find($sale['id']);
-                //$re['count'] = $sale['count'];
+        if(is_array($receiving_array)){
+            foreach($receiving_array as $receiving){
+                $re = D('ItemsView')->find($receiving['id']);
+                $re['count'] = $receiving['count'];
 
-                //array_push($sale_item_array,$re);
-            //}
-        //}
+                array_push($receiving_item_array,$re);
+            }
+        }
 
-        //return $sale_item_array;
-    //}
+        return $receiving_item_array;
+    }
 
-    //public function shop_cat_clean(){
-        //session('shop_cat',null);
+    public function receiving_cat_clean(){
+        session('receiving_cat',null);
 
-        //$this->success(L('sale_clean_success'),U('Sales/index'));
-    //}
+        $this->success(L('receiving_clean_success'),U('Receivings/index'));
+    }
 }

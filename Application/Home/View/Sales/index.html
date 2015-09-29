@@ -24,7 +24,7 @@
 
                       $.each(items, function(i, item)
                       {
-                          $("<li></li>").text("[" + item.item_number + "] "+item.name).attr("id", item.id).appendTo($list_item).mouseover(function(){
+                          $("<li></li>").text("[" + item.id+ "] "+item.name).attr("id", item.id).appendTo($list_item).mouseover(function(){
                               $(this).css("background","#000000");
                           }).mouseout(function(){
                               $(this).css("background","#FFFFFF");

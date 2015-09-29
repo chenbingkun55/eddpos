@@ -12,14 +12,14 @@
      <script>
 
          $(function() {
-             var $list_item = $("<ul class='autocomplete'></ul>").hide().insertAfter("#sale_item");
-             var $list_sale = $('#list_sale');
+             var $list_item = $("<ul class='autocomplete'></ul>").hide().insertAfter("#receiving_item");
+             var $list_receiving = $('#list_receiving');
 
-             $("#sale_item").keyup(function(event){
-                 var fstr = $("#sale_item").val().trim();
+             $("#receiving_item").keyup(function(event){
+                 var fstr = $("#receiving_item").val().trim();
                  if(fstr == '' || fstr == null) return;
 
-                 $.getJSON("{:U('Home/Sales/find_item/fstr/','','')}" + "/" + fstr,function(items,status){
+                 $.getJSON("{:U('Home/Receivings/find_item/fstr/','','')}" + "/" + fstr,function(items,status){
                       $list_item.empty();
 
                       $.each(items, function(i, item)
@@ -45,38 +45,38 @@
          $.extend({sale_add:function(x){
               if(x == '' || x == null) return;
 
-              $.getJSON("{:U('Home/Sales/add_item/id/','','')}" + "/" + x);
+              $.getJSON("{:U('Home/Receivings/add_item/id/','','')}" + "/" + x);
               }});
 
          $.extend({sale_view:function(){
-              $.getJSON("{:U('Home/Sales/show_item/','','')}",function(esales){
-                  $list_sale.empty();
-                  $("<tr></tr>").html("<th>Number</th><th>Name</th><th>taxes</th><th>Count</th><th>Price</th><th>total</th>").appendTo($list_sale);
+              $.getJSON("{:U('Home/Receivings/show_item/','','')}",function(esales){
+                  $list_receiving.empty();
+                  $("<tr></tr>").html("<th>Number</th><th>Name</th><th>taxes</th><th>Count</th><th>Price</th><th>total</th>").appendTo($list_receiving);
                   var sale_total = 0.0;
                   $.each(esales, function(i, sale)
                   {
                    var total = (sale.count * sale.unit_price).toFixed(2);
                    sale_total = (parseFloat(sale_total)+parseFloat(total)).toFixed(2);
-                   $("<tr></tr>").html("<td>"+sale.item_number+"</td><td>"+sale.name+ "</td><td>" +sale.percent+ "</td><td>"+sale.count+"</td><td>"+ sale.unit_price +"</td><td>"+ total +"</td>").appendTo($list_sale);
-                     $list_sale.hide();
+                   $("<tr></tr>").html("<td>"+sale.item_number+"</td><td>"+sale.name+ "</td><td>" +sale.percent+ "</td><td>"+sale.count+"</td><td>"+ sale.unit_price +"</td><td>"+ total +"</td>").appendTo($list_receiving);
+                     $list_receiving.hide();
                   });
-                  $("<tr></tr>").html("<td colspan='5'>共计:</td><td>"+ sale_total +"</td>").appendTo($list_sale);
-                  $list_sale.show();
+                  $("<tr></tr>").html("<td colspan='5'>共计:</td><td>"+ sale_total +"</td>").appendTo($list_receiving);
+                  $list_receiving.show();
                   $list_item.hide();
-                  $("#sale_item").val('');
+                  $("#receiving_item").val('');
              });
          }});
          $.sale_view();
-         $('#sale_item').focus();
+         $('#receiving_item').focus();
          });
     </script>
     </HEAD>
     <BODY>
-        <a href="{:U('Home/Sales/shop_cat_clean')}">Clean Shop Cat</a>
+        <a href="{:U('Home/Receivings/shop_cat_clean')}">Clean Shop Cat</a>
         <BR>
         Add item:
-      <input id="sale_item" />
-      <table id="list_sale" border="0">
+      <input id="receiving_item" />
+      <table id="list_receiving" border="0">
       </table>
     </BODY>
 </HTML>
