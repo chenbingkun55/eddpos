@@ -52,6 +52,27 @@ class SalesController extends BaseController {
         }
     }
 
+    public function alter_item(){
+        $id = I('id','intval');
+        $new_count = I('count','intval');
+        $new_unit_price = I('unit_price','intval');
+
+        if(! empty(session('?shop_cat'))){
+            $sale_array = session('shop_cat');
+            for($i = 0; $i < count($sale_array); $i++){
+                if($sale_array[$i]['id'] == $id){
+                    $sale_array[$i]['count'] = $new_count;
+                }
+
+                if($sale_array[$i]['id'] == $id){
+                    $sale_array[$i]['unit_price'] = number_format($new_unit_price,2);
+                }
+            }
+        session('shop_cat',$sale_array,3600);
+        $this->ajaxReturn("true");
+        }
+    }
+
     public function add_item(){
         $id = I('id','intval');
         $is_new = true;
@@ -78,6 +99,7 @@ class SalesController extends BaseController {
             }
         }
         session('shop_cat',$sale_array,3600);
+        $this->ajaxReturn("true");
     }
 
     public function show_item(){
@@ -97,11 +119,13 @@ class SalesController extends BaseController {
 
                 if(is_array($kit_re)){
                     $kit_re['count'] = $sale['count'];
+                    if(! is_null($sale['unit_price'])) { $kit_re['unit_price'] = $sale['unit_price']; }
                     array_push($sale_item_array,$kit_re);
                 }
 
                 if(is_array($re)){
                     $re['count'] = $sale['count'];
+                    if(! is_null($sale['unit_price'])) { $re['unit_price'] = $sale['unit_price']; }
                     array_push($sale_item_array,$re);
                 }
             }

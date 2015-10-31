@@ -10,16 +10,16 @@
        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
      <script>
-
-         $(function() {
+        $(document).ready(function(){
              var $list_item = $("<ul class='autocomplete'></ul>").hide().insertAfter("#sale_item");
-             var $list_sale = $('#list_sale');
+             var $sale_list = $('#sale_list');
+
 
              $("#sale_item").keyup(function(event){
-                 var fstr = $("#sale_item").val().trim();
-                 if(fstr == '' || fstr == null) return;
+                 var kstr = $("#sale_item").val().trim();
+                 if(kstr == '' || kstr == null) return;
 
-                 $.getJSON("{:U('Home/Sales/find_item/fstr/','','')}" + "/" + fstr,function(items,status){
+                 $.getJSON("{:U('Home/Sales/find_item/','','')}",{ fstr : kstr },function(items,status){
                       $list_item.empty();
 
                       $.each(items, function(i, item)
@@ -37,7 +37,6 @@
                   if(event.which == 13) {
                      var item_id = $list_item.children().first().attr('id');
                      $.sale_add(item_id);
-                     $.sale_view();
                   }
                  $list_item.show();
                  });
@@ -45,25 +44,36 @@
          $.extend({sale_add:function(x){
               if(x == '' || x == null) return;
 
-              $.getJSON("{:U('Home/Sales/add_item/id/','','')}" + "/" + x);
-              }});
+              $.getJSON("{:U('Home/Sales/add_item/','','')}",{ id: x },$.sale_view());
+          }});
+
 
          $.extend({sale_view:function(){
               $.getJSON("{:U('Home/Sales/show_item/','','')}",function(esales){
-                  $list_sale.empty();
-                  $("<tr></tr>").html("<th>Number</th><th>Name</th><th>taxes</th><th>Count</th><th>Price</th><th>total</th>").appendTo($list_sale);
+                  $sale_list.empty();
+                  $("<tr></tr>").html("<th>Number</th><th>Name</th><th>taxes</th><th>Count</th><th>Price</th><th>total</th>").appendTo($sale_list);
                   var sale_total = 0.0;
                   $.each(esales, function(i, sale)
                   {
                    var total = (sale.count * sale.unit_price).toFixed(2);
                    sale_total = (parseFloat(sale_total)+parseFloat(total)).toFixed(2);
-                   $("<tr></tr>").html("<td>"+sale.item_number+"</td><td>"+sale.name+ "</td><td>" +sale.percent+ "</td><td>"+sale.count+"</td><td>"+ sale.unit_price +"</td><td>"+ total +"</td>").appendTo($list_sale);
-                     $list_sale.hide();
+                   $("<tr id=\""+ sale.id +"\"></tr>").html("<td class=\"number\">"+sale.item_number+"</td><td class=\"name\">"+sale.name+ "</td><td class=\"percent\">" +sale.percent+ "</td><td class=\"count\"><input type=\"text\" value=\""+sale.count+"\"></td><td class=\"unit_price\"><input type=\"text\" value=\""+ sale.unit_price +"\"></td><td >"+ total +"</td><td><button class=\"row_alter\">修改</button></td>").appendTo($sale_list);
+                     $sale_list.hide();
                   });
-                  $("<tr></tr>").html("<td colspan='5'>共计:</td><td>"+ sale_total +"</td>").appendTo($list_sale);
-                  $list_sale.show();
+                  $("#sale_total").text(sale_total);
+                  $sale_list.show();
                   $list_item.hide();
                   $("#sale_item").val('');
+                  $(".row_alter").click(function(){
+                      var sale_row = $(this).parent().parent();
+                      var aid = sale_row.attr("id");
+                      var new_count = sale_row.children('td.count').find('input').val();
+                      var new_unit_price = sale_row.children("td.unit_price").find('input').val();
+                      <!--alert(new_unit_price+" "+new_count);-->
+                          $.getJSON("{:U('Home/Sales/alter_item/','','')}",{ id: aid,count : new_count,unit_price: new_unit_price},function(){
+                          window.location.reload();
+                          });
+                  });
              });
          }});
          $.sale_view();
@@ -76,7 +86,29 @@
         <BR>
         Add item:
       <input id="sale_item" />
-      <table id="list_sale" border="0">
+      <table id="sale_list" border="0">
+      </table>
+      <table id="sale_close" border="1">
+          <tr>
+              <td>客户：</td>
+              <td><input type="text"></td>
+          </tr>
+          <tr>
+              <td>共计:</td>
+              <td><span id="sale_total">0</span></td>
+          </tr>
+          <tr>
+              <td>结算方式:</td>
+              <td><select name="sale_mothd" id="sale_mothd">
+                  <option value="money">现金</option>
+                  <option value="playcar">会员卡</option>
+                  <option value="taobaoplay">支付宝</option>
+              </select>
+              </td>
+          </tr>
+          <tr>
+              <td colspan="2"><input type="SUBMIT" value="结算"></td>
+          </tr>
       </table>
     </BODY>
 </HTML>
